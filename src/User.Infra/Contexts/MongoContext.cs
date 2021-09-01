@@ -1,23 +1,22 @@
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
 using User.Domain.Entities;
-using User.Domain.Settings;
 
 namespace User.Infra.Contexts
 {
     public class MongoContext
     {
-        private readonly IOptions<UserDatabaseSettings> _options;
+        private readonly IConfiguration _configuration;
         private IMongoDatabase Database { get; }
 
-        public MongoContext(IOptions<UserDatabaseSettings> options)
+        public MongoContext(IConfiguration configuration)
         {
-            _options = options;
+            _configuration = configuration;
 
-            var client = new MongoClient(options.Value.ConnectionString);
-            Database = client.GetDatabase(options.Value.DatabaseName);
+            var client = new MongoClient(configuration["MONGO_HOST"]);
+            Database = client.GetDatabase(configuration["MONGO_DATABASE"]);
         }
 
-        public IMongoCollection<Users> Users => Database.GetCollection<Users>(_options.Value.UsersCollectionName);
+        public IMongoCollection<Users> Users => Database.GetCollection<Users>(_configuration["MONGO_USERS_COLLECTION"]);
     }
 }
