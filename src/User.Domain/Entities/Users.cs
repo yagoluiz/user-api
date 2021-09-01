@@ -15,9 +15,6 @@ namespace User.Domain.Entities
         public string Id { get; }
         [BsonElement("name")] public string Name { get; }
         [BsonElement("username")] public string Username { get; }
-
-        [BsonIgnoreIfNull]
-        [BsonElement("priority")]
-        public int? Priority { get; }
+        [BsonElement("priority")] public int? Priority { get; }
     }
 }

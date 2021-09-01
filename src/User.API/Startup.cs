@@ -5,7 +5,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using User.API.Extensions;
+using User.Domain.Interfaces.Repositories;
 using User.Infra.Contexts;
+using User.Infra.Repositories;
 
 namespace User.API
 {
@@ -20,13 +22,13 @@ namespace User.API
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<MongoContext>();
-
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "User.API", Version = "v1" });
             });
+
+            AddDatabaseContext(services);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -45,6 +47,13 @@ namespace User.API
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+        }
+
+        private void AddDatabaseContext(IServiceCollection services)
+        {
+            services.AddSingleton<MongoContext>();
+
+            services.AddScoped<IUsersRepository, UsersRepository>();
         }
     }
 }
