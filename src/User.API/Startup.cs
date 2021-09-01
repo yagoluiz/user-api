@@ -4,6 +4,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using User.API.Extensions;
+using User.Domain.Settings;
+using User.Infra.Contexts;
 
 namespace User.API
 {
@@ -18,6 +21,10 @@ namespace User.API
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<UserDatabaseSettings>(Configuration.GetSection(nameof(UserDatabaseSettings)));
+
+            services.AddSingleton<MongoContext>();
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -27,6 +34,8 @@ namespace User.API
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseMongoContextSeed();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

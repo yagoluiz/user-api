@@ -23,4 +23,9 @@
         </PackageReference>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\..\src\User.API\User.API.csproj" />
+      <ProjectReference Include="..\..\src\User.Domain\User.Domain.csproj" />
+    </ItemGroup>
+
 </Project>
