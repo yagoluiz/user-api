@@ -5,6 +5,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using User.API.Extensions;
+using User.API.Services;
+using User.API.Services.Interfaces;
 using User.Domain.Interfaces.Repositories;
 using User.Infra.Contexts;
 using User.Infra.Repositories;
@@ -29,6 +31,7 @@ namespace User.API
             });
 
             AddDatabaseContext(services);
+            AddServiceScopes(services);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -54,6 +57,11 @@ namespace User.API
             services.AddSingleton<MongoContext>();
 
             services.AddScoped<IUsersRepository, UsersRepository>();
+        }
+
+        private void AddServiceScopes(IServiceCollection services)
+        {
+            services.AddScoped<IUsersService, UsersService>();
         }
     }
 }
