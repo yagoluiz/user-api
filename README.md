@@ -1,5 +1,7 @@
 # User Search API
 
+![](https://github.com/yagoluiz/user-api/workflows/Docker%20Image%20CI/badge.svg)
+
 API responsible for search users using MongoDB [Text Search](https://docs.mongodb.com/manual/text-search).
 
 ## Project Structure
@@ -94,4 +96,4 @@ Find the folder **coverage** and open **index.html**.
 ## Improvements
 
 - Search endpoint cache
-- Performance query for search (remove skip and limi)
+- Performance query for search (remove skip and limit)
