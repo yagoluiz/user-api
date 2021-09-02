@@ -97,3 +97,4 @@ Find the folder **coverage** and open **index.html**.
 
 - Search endpoint cache
 - Performance query for search (remove skip and limit)
+- Priority index
