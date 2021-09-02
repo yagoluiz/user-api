@@ -23,6 +23,7 @@ namespace User.Infra.Repositories
             var users = await _context.Users.Find(filter)
                 .Skip(limit * page)
                 .Limit(limit)
+                .SortBy(user => user.Priority)
                 .ToListAsync();
 
             return users;
