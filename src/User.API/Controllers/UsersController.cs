@@ -24,8 +24,10 @@ namespace User.API.Controllers
         /// </summary>
         /// <remarks>
         ///     Sample request example:
-        ///     GET /search?query=dragon (default: from = 0 and size = 15)
-        ///     GET /search?query=dragon&amp;from=1&amp;size=10&amp;name=lageado (other from and size)
+        /// 
+        ///     GET /search?query=yago (default: from = 0 and size = 15)
+        /// 
+        ///     GET /search?query=yago&amp;from=1&amp;size=10 (other from and size)
         /// </remarks>
         /// <param name="request"></param>
         /// <returns></returns>
