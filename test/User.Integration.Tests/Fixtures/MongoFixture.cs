@@ -1,4 +1,5 @@
 using System;
+using MongoDB.Driver;
 using User.Infra.Contexts;
 using User.Infra.Seeds;
 using User.Integration.Tests.Setups;
@@ -11,9 +12,10 @@ namespace User.Integration.Tests.Fixtures
 
         public MongoFixture()
         {
+            var mongoClient = new MongoClient("mongodb://localhost:27017");
             var mongoSetup = new MongoSetup();
 
-            _context = new MongoContext(mongoSetup.MongoConfiguration);
+            _context = new MongoContext(mongoClient, mongoSetup.MongoConfiguration);
 
             UsersSeed.RunSeed(_context);
         }

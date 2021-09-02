@@ -14,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using MongoDB.Driver;
 using User.API.Extensions;
 using User.API.Middlewares;
 using User.API.Services;
@@ -96,6 +97,7 @@ namespace User.API
 
         private void AddDatabaseContext(IServiceCollection services)
         {
+            services.AddSingleton<IMongoClient>(new MongoClient(Configuration["MONGO_HOST"]));
             services.AddSingleton<MongoContext>();
 
             services.AddScoped<IUsersRepository, UsersRepository>();

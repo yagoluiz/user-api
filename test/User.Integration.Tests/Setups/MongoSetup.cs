@@ -16,7 +16,6 @@ namespace User.Integration.Tests.Setups
         {
             var settings = new Dictionary<string, string>
             {
-                { "MONGO_HOST", "mongodb://localhost:27017" },
                 { "MONGO_USER_DATABASE", "UserTest" },
                 { "MONGO_USERS_COLLECTION", "UsersTest" }
             };

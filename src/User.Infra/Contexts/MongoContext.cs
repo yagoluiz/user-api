@@ -9,12 +9,11 @@ namespace User.Infra.Contexts
         private readonly IConfiguration _configuration;
         public IMongoDatabase Database { get; }
 
-        public MongoContext(IConfiguration configuration)
+        public MongoContext(IMongoClient mongoClient, IConfiguration configuration)
         {
             _configuration = configuration;
 
-            var client = new MongoClient(configuration["MONGO_HOST"]);
-            Database = client.GetDatabase(configuration["MONGO_USER_DATABASE"]);
+            Database = mongoClient.GetDatabase(configuration["MONGO_USER_DATABASE"]);
         }
 
         public IMongoCollection<Users> Users => Database.GetCollection<Users>(_configuration["MONGO_USERS_COLLECTION"]);
