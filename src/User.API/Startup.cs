@@ -56,6 +56,7 @@ namespace User.API
             }
 
             app.UseRouting();
+            app.UseLogMiddleware();
             app.UseExceptionHandler(new ExceptionHandlerOptions
             {
                 ExceptionHandler = new ErrorHandlerMiddleware(env).Invoke

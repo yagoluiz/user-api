@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Diagnostics;
@@ -8,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace User.API.Middlewares
 {
+    [ExcludeFromCodeCoverage]
     public class ErrorHandlerMiddleware
     {
         private readonly IWebHostEnvironment _webHostEnvironment;
