@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -7,6 +8,7 @@ using User.Infra.Seeds;
 
 namespace User.API.Extensions
 {
+    [ExcludeFromCodeCoverage]
     public static class MongoContextSeedExtension
     {
         public static void UseMongoContextSeed(this IApplicationBuilder builder)

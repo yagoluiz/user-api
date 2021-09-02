@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Reflection;
 using Microsoft.AspNetCore.Builder;
@@ -16,6 +17,7 @@ using User.Infra.Repositories;
 
 namespace User.API
 {
+    [ExcludeFromCodeCoverage]
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -53,9 +55,7 @@ namespace User.API
             }
 
             app.UseRouting();
-
             app.UseAuthorization();
-
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
 
