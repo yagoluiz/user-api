@@ -13,8 +13,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using MongoDB.Bson;
 using MongoDB.Driver;
+using MongoDB.Driver.Core.Events;
 using User.API.Extensions;
 using User.API.Middlewares;
 using User.API.Services;
@@ -97,7 +100,23 @@ namespace User.API
 
         private void AddDatabaseContext(IServiceCollection services)
         {
-            services.AddSingleton<IMongoClient>(new MongoClient(Configuration["MONGO_HOST"]));
+            services.AddSingleton<IMongoClient>(service =>
+            {
+                var settings = MongoClientSettings.FromUrl(new MongoUrl(Configuration["MONGO_HOST"]));
+                settings.ClusterConfigurator = builder =>
+                {
+                    var logger = service.GetRequiredService<ILogger<Startup>>();
+
+                    builder.Subscribe<CommandStartedEvent>(@event =>
+                    {
+                        logger.LogInformation(
+                            $"Command Started: {@event.CommandName}, Json: {@event.Command.ToJson()}");
+                    });
+                };
+
+                return new MongoClient(settings);
+            });
+
             services.AddSingleton<MongoContext>();
 
             services.AddScoped<IUsersRepository, UsersRepository>();
