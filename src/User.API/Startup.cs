@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using User.API.Extensions;
+using User.API.Middlewares;
 using User.API.Services;
 using User.API.Services.Interfaces;
 using User.Domain.Interfaces.Repositories;
@@ -55,7 +56,10 @@ namespace User.API
             }
 
             app.UseRouting();
-            app.UseAuthorization();
+            app.UseExceptionHandler(new ExceptionHandlerOptions
+            {
+                ExceptionHandler = new ErrorHandlerMiddleware(env).Invoke
+            });
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
 
