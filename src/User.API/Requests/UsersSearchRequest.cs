@@ -4,8 +4,20 @@ namespace User.API.Requests
 {
     public class UsersSearchRequest
     {
-        [Required] public string Query { get; set; }
-        [MinLength(0)] public int From { get; set; }
-        [MaxLength(15)] public int Size { get; set; } = 15;
+        /// <summary>
+        /// Term search
+        /// </summary>
+        [Required]
+        public string Query { get; set; }
+
+        /// <summary>
+        /// Pagination from
+        /// </summary>
+        public int From { get; set; } = 0;
+
+        /// <summary>
+        /// Pagination size
+        /// </summary>
+        public int Size { get; set; } = 15;
     }
 }

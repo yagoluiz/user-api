@@ -9,8 +9,19 @@ namespace User.API.Responses
             Username = username;
         }
 
+        /// <summary>
+        /// User id
+        /// </summary>
         public string Id { get; }
+
+        /// <summary>
+        /// User name
+        /// </summary>
         public string Name { get; }
+
+        /// <summary>
+        /// User identify
+        /// </summary>
         public string Username { get; }
     }
 }

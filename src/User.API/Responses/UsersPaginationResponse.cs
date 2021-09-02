@@ -11,8 +11,19 @@ namespace User.API.Responses
             Data = data;
         }
 
+        /// <summary>
+        /// Pagination from
+        /// </summary>
         public int From { get; }
+
+        /// <summary>
+        /// Size items
+        /// </summary>
         public int Size { get; }
+
+        /// <summary>
+        /// Users
+        /// </summary>
         public IEnumerable<UsersResponse> Data { get; }
     }
 }
