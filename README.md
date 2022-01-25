@@ -4,31 +4,6 @@
 
 API responsible for search users using MongoDB [Text Search](https://docs.mongodb.com/manual/text-search).
 
-## Project Structure
-
-The project uses the MVC layered pattern.
-
-- Project folder structure:
-
-```
-├── src 
-  ├── User.API (project)
-  ├── User.Domain (project)
-  ├── User.Infra (project)
-├── test
-  ├── User.Integration.Tests (project)
-  ├── User.Unit.Tests (project)
-├── User (solution)
-```
-
-- Design layers pattern:
-
-1. **User.API**: responsible for the API endpoint availability layer
-2. **User.Domain**: application domain responsible for maintaining business rules
-3. **User.Infra**: for data access and external services
-4. **User.Integration.Tests**: responsible for the integration test layer of the projects
-5. **User.Unit.Tests**: responsible for the unit test layer of the projects
-
 ## Instructions for run project
 
 Run project via Docker, via Visual Studio (F5 or CTRL + F5), Visual Studio Code (tasks project) or CLI.
