@@ -6,7 +6,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
-	"github.com/ilyakaznacheev/cleanenv"
+	"github.com/yagoluiz/user-api/internal/config"
 	"github.com/yagoluiz/user-api/internal/handlers"
 	"github.com/yagoluiz/user-api/internal/repositories"
 	"github.com/yagoluiz/user-api/internal/routers"
@@ -15,16 +15,8 @@ import (
 	"github.com/yagoluiz/user-api/pkg/db/seed"
 )
 
-type config struct {
-	Port            string `env:"PORT" env-default:":8080"`
-	MongoConnection string `env:"MONGO_CONNECTION" env-default:"mongodb://localhost:27017"`
-	MongoDatabase   string `env:"MONGO_DATABASE" env-default:"User"`
-	MongoCollection string `env:"MONGO_COLLECTION" env-default:"Users"`
-}
-
 func main() {
-	var cfg config
-	err := cleanenv.ReadEnv(&cfg)
+	cfg, err := config.GetConfigs()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -34,7 +26,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	err = seed.NewSeed(database, cfg.MongoDatabase, cfg.MongoCollection)
+	err = seed.NewUserSeed(database)
 	if err != nil {
 		log.Fatal(err)
 	}
