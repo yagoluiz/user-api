@@ -9,3 +9,6 @@ compose-down:
 
 compose-log-%:
 	@docker-compose -f ./deployments/local/docker-compose.yaml logs -t --tail=100 -f $*
+
+mongo-db:
+	@docker run --name mongo-db -p 27017:27017 -v mongo-db:/data/db -d mongo:6.0

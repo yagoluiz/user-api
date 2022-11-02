@@ -5,6 +5,7 @@ go 1.19
 require (
 	github.com/BurntSushi/toml v1.2.0 // indirect
 	github.com/go-chi/chi/v5 v5.0.7 // indirect
+	github.com/gocarina/gocsv v0.0.0-20220927221512-ad3251f9fa25 // indirect
 	github.com/golang/snappy v0.0.1 // indirect
 	github.com/ilyakaznacheev/cleanenv v1.3.0 // indirect
 	github.com/joho/godotenv v1.4.0 // indirect
