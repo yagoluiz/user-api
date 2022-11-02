@@ -2,23 +2,45 @@ package seed
 
 import (
 	"context"
+	"os"
+	"time"
+
 	"github.com/gocarina/gocsv"
 	"github.com/yagoluiz/user-api/internal/entity"
-	"log"
-	"os"
-
 	"github.com/yagoluiz/user-api/pkg/db"
+	"go.mongodb.org/mongo-driver/bson"
 )
 
-func NewSeed(db *db.MongoClient, base, collection string) error {
-	users, err := importUserData()
+const (
+	database   = "User"
+	collection = "Users"
+)
+
+func NewUserSeed(db *db.MongoClient) error {
+	err := importUserDone(db)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
-	err = insertUserData(db, base, collection, users)
+	users, err := importUserData()
 	if err != nil {
-		log.Fatal(err)
+		return err
+	}
+
+	err = insertUserData(db, users)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func importUserDone(db *db.MongoClient) error {
+	coll := db.Client.Database(database).Collection(collection)
+
+	_, err := coll.Find(context.TODO(), bson.D{})
+	if err != nil {
+		return err
 	}
 
 	return nil
@@ -34,24 +56,27 @@ func importUserData() ([]*entity.User, error) {
 	var users []*entity.User
 
 	if err := gocsv.Unmarshal(file, &users); err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
 	return users, nil
 }
 
-func insertUserData(db *db.MongoClient, base, collection string, users []*entity.User) error {
-	data := make([]interface{}, len(users))
+func insertUserData(db *db.MongoClient, users []*entity.User) error {
+	date := time.Now().UTC()
 
+	data := make([]interface{}, len(users))
 	for i := range data {
+		users[i].CreatedAt = date
+		users[i].UpdatedAt = date
 		data[i] = users[i]
 	}
 
-	coll := db.Client.Database(base).Collection(collection)
+	coll := db.Client.Database(database).Collection(collection)
 
 	_, err := coll.InsertMany(context.TODO(), data)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	return err
