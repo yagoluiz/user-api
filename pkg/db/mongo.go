@@ -2,13 +2,17 @@ package db
 
 import (
 	"context"
-	"errors"
-	"log"
 	"time"
 
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
+)
+
+const (
+	database   = "User"
+	collection = "Users"
 )
 
 type MongoClient struct {
@@ -24,16 +28,31 @@ func NewConnection(conn string) (*MongoClient, error) {
 		options.Client().ApplyURI(conn),
 	)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
 	return &MongoClient{Client: client}, nil
 }
 
+func (m *MongoClient) CreateIndexes() error {
+	coll := m.Client.Database(database).Collection(collection)
+
+	model := mongo.IndexModel{
+		Keys:    bson.D{{Key: "name", Value: "text"}, {Key: "username", Value: "text"}},
+		Options: options.Index().SetDefaultLanguage("pt"),
+	}
+	_, err := coll.Indexes().CreateOne(context.TODO(), model)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (m *MongoClient) Ping() error {
 	err := m.Client.Ping(context.Background(), readpref.Primary())
 	if err != nil {
-		return errors.New(err.Error())
+		return err
 	}
 
 	return nil

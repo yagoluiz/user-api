@@ -26,6 +26,11 @@ func main() {
 		log.Fatal(err)
 	}
 
+	err = database.CreateIndexes()
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	err = seed.NewUserSeed(database)
 	if err != nil {
 		log.Fatal(err)
