@@ -7,12 +7,12 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/yagoluiz/user-api/internal/config"
+	"github.com/yagoluiz/user-api/internal/db"
+	"github.com/yagoluiz/user-api/internal/db/seed"
 	"github.com/yagoluiz/user-api/internal/handlers"
 	"github.com/yagoluiz/user-api/internal/repositories"
 	"github.com/yagoluiz/user-api/internal/routers"
 	"github.com/yagoluiz/user-api/internal/usercase"
-	"github.com/yagoluiz/user-api/pkg/db"
-	"github.com/yagoluiz/user-api/pkg/db/seed"
 )
 
 func main() {

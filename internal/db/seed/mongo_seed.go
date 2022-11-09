@@ -6,9 +6,10 @@ import (
 	"time"
 
 	"github.com/gocarina/gocsv"
+	"github.com/yagoluiz/user-api/internal/db"
 	"github.com/yagoluiz/user-api/internal/entity"
-	"github.com/yagoluiz/user-api/pkg/db"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 const (
@@ -17,9 +18,13 @@ const (
 )
 
 func NewUserSeed(db *db.MongoClient) error {
-	err := importUserDone(db)
+	done, err := importUserDone(db)
 	if err != nil {
 		return err
+	}
+
+	if done {
+		return nil
 	}
 
 	users, err := importUserData()
@@ -35,15 +40,19 @@ func NewUserSeed(db *db.MongoClient) error {
 	return nil
 }
 
-func importUserDone(db *db.MongoClient) error {
+func importUserDone(db *db.MongoClient) (bool, error) {
 	coll := db.Client.Database(database).Collection(collection)
 
-	_, err := coll.Find(context.TODO(), bson.D{})
+	var user entity.User
+	err := coll.FindOne(context.TODO(), bson.D{}).Decode(&user)
 	if err != nil {
-		return err
+		if err == mongo.ErrNoDocuments {
+			return false, nil
+		}
+		return false, err
 	}
 
-	return nil
+	return true, nil
 }
 
 func importUserData() ([]*entity.User, error) {
