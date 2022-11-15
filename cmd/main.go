@@ -9,6 +9,7 @@ import (
 	httpSwagger "github.com/swaggo/http-swagger"
 	_ "github.com/yagoluiz/user-api/api" // Swag CLI
 	"github.com/yagoluiz/user-api/internal/api/handlers"
+	"github.com/yagoluiz/user-api/internal/api/healths"
 	"github.com/yagoluiz/user-api/internal/api/routers"
 	"github.com/yagoluiz/user-api/internal/config"
 	"github.com/yagoluiz/user-api/internal/db"
@@ -53,12 +54,15 @@ func main() {
 	h := handlers.NewUserSearchHandler(uc)
 
 	r := chi.NewRouter()
+	r.Use(middleware.RequestID)
 	r.Use(middleware.Logger)
-	r.Use(middleware.Heartbeat("/health"))
+
+	r.Get("/swagger/*", httpSwagger.WrapHandler)
 
 	routers.UserRouters(r, h)
 
-	r.Get("/swagger/*", httpSwagger.WrapHandler)
+	healths := healths.NewHealthChecks(cfg)
+	r.Get("/health", healths.HandlerFunc)
 
 	log.Fatal(http.ListenAndServe(cfg.Port, r))
 }

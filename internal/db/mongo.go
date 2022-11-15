@@ -7,7 +7,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
 const (
@@ -42,15 +41,6 @@ func (m *MongoClient) CreateIndexes() error {
 		Options: options.Index().SetDefaultLanguage("pt"),
 	}
 	_, err := coll.Indexes().CreateOne(context.TODO(), model)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *MongoClient) Ping() error {
-	err := m.Client.Ping(context.Background(), readpref.Primary())
 	if err != nil {
 		return err
 	}
