@@ -13,8 +13,8 @@ func NewUserSearchUserCase(r *repositories.UserRepository) *UserSearchUserCase {
 	return &UserSearchUserCase{repository: r}
 }
 
-func (u *UserSearchUserCase) Search(term string) ([]*entity.User, error) {
-	users, err := u.repository.Search(term)
+func (u *UserSearchUserCase) Search(term string, limit, page int) ([]*entity.User, error) {
+	users, err := u.repository.Search(term, limit, page)
 	if err != nil {
 		return nil, err
 	}

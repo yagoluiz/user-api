@@ -1,0 +1,63 @@
+basePath: /api
+definitions:
+  entity.User:
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      updatedAt:
+        type: string
+      userId:
+        type: string
+      username:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    name: Yago Luiz
+    url: http://www.github.com/yagoluiz
+  description: User management.
+  termsOfService: http://swagger.io/terms/
+  title: User API
+  version: "1.0"
+paths:
+  /v1/users/search:
+    get:
+      consumes:
+      - application/json
+      description: Search users by term
+      parameters:
+      - description: Term search
+        in: query
+        name: query
+        required: true
+        type: string
+      - description: From page search
+        in: query
+        name: from
+        required: true
+        type: string
+      - description: Size page search
+        in: query
+        name: size
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.User'
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: Search users by term
+      tags:
+      - users
+swagger: "2.0"

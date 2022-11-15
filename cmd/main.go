@@ -6,15 +6,27 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	httpSwagger "github.com/swaggo/http-swagger"
+	_ "github.com/yagoluiz/user-api/api" // Swag CLI
+	"github.com/yagoluiz/user-api/internal/api/handlers"
+	"github.com/yagoluiz/user-api/internal/api/routers"
 	"github.com/yagoluiz/user-api/internal/config"
 	"github.com/yagoluiz/user-api/internal/db"
 	"github.com/yagoluiz/user-api/internal/db/seed"
-	"github.com/yagoluiz/user-api/internal/handlers"
 	"github.com/yagoluiz/user-api/internal/repositories"
-	"github.com/yagoluiz/user-api/internal/routers"
 	"github.com/yagoluiz/user-api/internal/usercase"
 )
 
+// @title          User API
+// @version        1.0
+// @description    User management.
+// @termsOfService http://swagger.io/terms/
+
+// @contact.name Yago Luiz
+// @contact.url  http://www.github.com/yagoluiz
+
+// @host     localhost:8080
+// @BasePath /api
 func main() {
 	cfg, err := config.GetConfigs()
 	if err != nil {
@@ -45,6 +57,8 @@ func main() {
 	r.Use(middleware.Heartbeat("/health"))
 
 	routers.UserRouters(r, h)
+
+	r.Get("/swagger/*", httpSwagger.WrapHandler)
 
 	log.Fatal(http.ListenAndServe(cfg.Port, r))
 }

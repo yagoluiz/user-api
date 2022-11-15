@@ -6,6 +6,7 @@ import (
 	"github.com/yagoluiz/user-api/internal/db"
 	"github.com/yagoluiz/user-api/internal/entity"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 const (
@@ -21,12 +22,13 @@ func NewUserRepository(db *db.MongoClient) *UserRepository {
 	return &UserRepository{database: db}
 }
 
-func (r *UserRepository) Search(term string) ([]*entity.User, error) {
+func (r *UserRepository) Search(term string, limit, page int) ([]*entity.User, error) {
 	coll := r.database.Client.Database(database).Collection(collection)
 
 	filter := bson.D{{Key: "$text", Value: bson.D{{Key: "$search", Value: term}}}}
+	opts := options.Find().SetSkip(int64(limit) * int64(page)).SetLimit(int64(limit))
 
-	cursor, err := coll.Find(context.TODO(), filter)
+	cursor, err := coll.Find(context.TODO(), filter, opts)
 	if err != nil {
 		return nil, err
 	}

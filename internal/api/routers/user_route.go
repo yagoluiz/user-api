@@ -2,7 +2,7 @@ package routers
 
 import (
 	"github.com/go-chi/chi/v5"
-	"github.com/yagoluiz/user-api/internal/handlers"
+	"github.com/yagoluiz/user-api/internal/api/handlers"
 )
 
 func UserRouters(r chi.Router, h *handlers.UserSearchHandler) {
