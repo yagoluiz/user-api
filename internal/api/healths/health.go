@@ -6,10 +6,10 @@ import (
 	"github.com/hellofresh/health-go/v5"
 	healthHttp "github.com/hellofresh/health-go/v5/checks/http"
 	healthMongo "github.com/hellofresh/health-go/v5/checks/mongo"
-	"github.com/yagoluiz/user-api/internal/config"
+	"github.com/yagoluiz/user-api/configs"
 )
 
-func NewHealthChecks(cfg *config.Config) *health.Health {
+func NewHealthChecks(cfg *configs.Config) *health.Health {
 	healths, _ := health.New(health.WithComponent(health.Component{
 		Name:    "user-api",
 		Version: "v1.0",

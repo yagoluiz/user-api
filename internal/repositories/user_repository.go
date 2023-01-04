@@ -3,8 +3,8 @@ package repositories
 import (
 	"context"
 
-	"github.com/yagoluiz/user-api/internal/db"
 	"github.com/yagoluiz/user-api/internal/entity"
+	"github.com/yagoluiz/user-api/pkg/db"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )

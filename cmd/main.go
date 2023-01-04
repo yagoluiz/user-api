@@ -13,14 +13,14 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 	httpSwagger "github.com/swaggo/http-swagger"
 	_ "github.com/yagoluiz/user-api/api" // Swag CLI
+	"github.com/yagoluiz/user-api/configs"
 	"github.com/yagoluiz/user-api/internal/api/handlers"
 	"github.com/yagoluiz/user-api/internal/api/healths"
 	"github.com/yagoluiz/user-api/internal/api/routers"
-	"github.com/yagoluiz/user-api/internal/config"
-	"github.com/yagoluiz/user-api/internal/db"
-	"github.com/yagoluiz/user-api/internal/db/seed"
 	"github.com/yagoluiz/user-api/internal/repositories"
+	"github.com/yagoluiz/user-api/internal/repositories/seed"
 	"github.com/yagoluiz/user-api/internal/usercase"
+	"github.com/yagoluiz/user-api/pkg/db"
 )
 
 // @title          User API
@@ -34,7 +34,7 @@ import (
 // @host     localhost:8080
 // @BasePath /api
 func main() {
-	cfg, err := config.GetConfigs()
+	cfg, err := configs.GetConfigs()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -66,11 +66,9 @@ func main() {
 
 	healths := healths.NewHealthChecks(cfg)
 	r.Get("/health", healths.HandlerFunc)
-
 	r.Get("/swagger/*", httpSwagger.WrapHandler)
 
 	server := &http.Server{Addr: cfg.Port, Handler: r}
-
 	serverCtx, serverStopCtx := context.WithCancel(context.Background())
 
 	sig := make(chan os.Signal, 1)
