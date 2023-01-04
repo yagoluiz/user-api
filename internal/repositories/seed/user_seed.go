@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/gocarina/gocsv"
-	"github.com/yagoluiz/user-api/internal/entity"
+	"github.com/yagoluiz/user-api/internal/domain"
 	"github.com/yagoluiz/user-api/pkg/db"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -43,7 +43,7 @@ func NewUserSeed(db *db.MongoClient) error {
 func importUserDone(db *db.MongoClient) (bool, error) {
 	coll := db.Client.Database(database).Collection(collection)
 
-	var user entity.User
+	var user domain.User
 	err := coll.FindOne(context.TODO(), bson.D{}).Decode(&user)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
@@ -55,14 +55,14 @@ func importUserDone(db *db.MongoClient) (bool, error) {
 	return true, nil
 }
 
-func importUserData() ([]*entity.User, error) {
+func importUserData() ([]*domain.User, error) {
 	file, err := os.OpenFile("resources/data/users.csv", os.O_RDONLY, os.ModePerm)
 	if err != nil {
 		return nil, err
 	}
 	defer file.Close()
 
-	var users []*entity.User
+	var users []*domain.User
 
 	if err := gocsv.Unmarshal(file, &users); err != nil {
 		return nil, err
@@ -71,7 +71,7 @@ func importUserData() ([]*entity.User, error) {
 	return users, nil
 }
 
-func insertUserData(db *db.MongoClient, users []*entity.User) error {
+func insertUserData(db *db.MongoClient, users []*domain.User) error {
 	date := time.Now().UTC()
 
 	data := make([]interface{}, len(users))

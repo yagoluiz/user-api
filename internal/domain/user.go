@@ -1,4 +1,4 @@
-package entity
+package domain
 
 import (
 	"time"
@@ -13,4 +13,12 @@ type User struct {
 	Username  string             `json:"username" bson:"username" csv:"username"`
 	CreatedAt time.Time          `json:"createdAt" bson:"createdAt" csv:"-"`
 	UpdatedAt time.Time          `json:"updatedAt" bson:"updatedAt" csv:"-"`
+}
+
+type UserRepository interface {
+	Search(term string, limit, page int) ([]*User, error)
+}
+
+type UserUsecase interface {
+	FindUser(term string, limit, page int) ([]*User, error)
 }

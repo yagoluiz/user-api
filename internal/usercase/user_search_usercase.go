@@ -1,19 +1,18 @@
 package usercase
 
 import (
-	"github.com/yagoluiz/user-api/internal/entity"
-	"github.com/yagoluiz/user-api/internal/repositories"
+	"github.com/yagoluiz/user-api/internal/domain"
 )
 
 type UserSearchUserCase struct {
-	repository *repositories.UserRepository
+	repository domain.UserRepository
 }
 
-func NewUserSearchUserCase(r *repositories.UserRepository) *UserSearchUserCase {
+func NewUserSearchUserCase(r domain.UserRepository) *UserSearchUserCase {
 	return &UserSearchUserCase{repository: r}
 }
 
-func (u *UserSearchUserCase) Search(term string, limit, page int) ([]*entity.User, error) {
+func (u *UserSearchUserCase) FindUser(term string, limit, page int) ([]*domain.User, error) {
 	users, err := u.repository.Search(term, limit, page)
 	if err != nil {
 		return nil, err

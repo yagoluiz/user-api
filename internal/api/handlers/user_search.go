@@ -5,14 +5,14 @@ import (
 	"strconv"
 
 	"github.com/yagoluiz/user-api/internal/api/responses"
-	"github.com/yagoluiz/user-api/internal/usercase"
+	"github.com/yagoluiz/user-api/internal/domain"
 )
 
 type UserSearchHandler struct {
-	userSearchUserCase *usercase.UserSearchUserCase
+	userSearchUserCase domain.UserUsecase
 }
 
-func NewUserSearchHandler(u *usercase.UserSearchUserCase) *UserSearchHandler {
+func NewUserSearchHandler(u domain.UserUsecase) *UserSearchHandler {
 	return &UserSearchHandler{userSearchUserCase: u}
 }
 
@@ -46,7 +46,7 @@ func (h *UserSearchHandler) Search(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	users, err := h.userSearchUserCase.Search(query, from, size)
+	users, err := h.userSearchUserCase.FindUser(query, from, size)
 	if err != nil {
 		responses.ResponseJSON(w, http.StatusInternalServerError, err)
 		return
