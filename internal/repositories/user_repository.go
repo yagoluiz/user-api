@@ -26,7 +26,7 @@ func (r *UserRepository) Search(term string, limit, page int) ([]*domain.User, e
 	coll := r.database.Client.Database(database).Collection(collection)
 
 	filter := bson.D{{Key: "$text", Value: bson.D{{Key: "$search", Value: term}}}}
-	opts := options.Find().SetSkip(int64(limit) * int64(page)).SetLimit(int64(limit))
+	opts := options.Find().SetSort(bson.D{{Key: "priority", Value: 1}}).SetSkip(int64(limit) * int64(page)).SetLimit(int64(limit))
 
 	cursor, err := coll.Find(context.TODO(), filter, opts)
 	if err != nil {

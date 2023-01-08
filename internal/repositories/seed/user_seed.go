@@ -32,7 +32,17 @@ func NewUserSeed(db *db.MongoClient) error {
 		return err
 	}
 
-	err = insertUserData(db, users)
+	priorities1, err := importPriorityData("resources/data/user_priority1.csv")
+	if err != nil {
+		return err
+	}
+
+	priorities2, err := importPriorityData("resources/data/user_priority2.csv")
+	if err != nil {
+		return err
+	}
+
+	err = insertUserData(db, users, priorities1, priorities2)
 	if err != nil {
 		return err
 	}
@@ -55,14 +65,14 @@ func importUserDone(db *db.MongoClient) (bool, error) {
 	return true, nil
 }
 
-func importUserData() ([]*domain.User, error) {
+func importUserData() ([]*domain.UserCSV, error) {
 	file, err := os.OpenFile("resources/data/users.csv", os.O_RDONLY, os.ModePerm)
 	if err != nil {
 		return nil, err
 	}
 	defer file.Close()
 
-	var users []*domain.User
+	var users []*domain.UserCSV
 
 	if err := gocsv.Unmarshal(file, &users); err != nil {
 		return nil, err
@@ -71,14 +81,57 @@ func importUserData() ([]*domain.User, error) {
 	return users, nil
 }
 
-func insertUserData(db *db.MongoClient, users []*domain.User) error {
-	date := time.Now().UTC()
+func importPriorityData(dir string) ([]*domain.UserPriorityCSV, error) {
+	file, err := os.OpenFile(dir, os.O_RDONLY, os.ModePerm)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
 
+	var priorities []*domain.UserPriorityCSV
+
+	if err := gocsv.Unmarshal(file, &priorities); err != nil {
+		return nil, err
+	}
+
+	return priorities, nil
+}
+
+func insertUserData(db *db.MongoClient, users []*domain.UserCSV, priorities1 []*domain.UserPriorityCSV, priorities2 []*domain.UserPriorityCSV) error {
 	data := make([]interface{}, len(users))
+
 	for i := range data {
-		users[i].CreatedAt = date
-		users[i].UpdatedAt = date
-		data[i] = users[i]
+		date := time.Now().UTC()
+		user := users[i]
+
+		var priority int
+		for _, v := range priorities1 {
+			if v.Priority == user.UserID {
+				priority = 1
+				break
+			}
+		}
+		if priority == 0 {
+			for _, v := range priorities2 {
+				if v.Priority == user.UserID {
+					priority = 2
+					break
+				}
+			}
+		}
+
+		userCreate := domain.User{
+			UserID:    user.UserID,
+			Name:      user.Name,
+			Username:  user.Username,
+			CreatedAt: date,
+			UpdatedAt: date,
+		}
+		if priority != 0 {
+			userCreate.Priority = priority
+		}
+
+		data[i] = userCreate
 	}
 
 	coll := db.Client.Database(database).Collection(collection)
