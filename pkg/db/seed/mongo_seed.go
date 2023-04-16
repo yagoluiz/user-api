@@ -2,12 +2,15 @@ package seed
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"time"
 
 	"github.com/gocarina/gocsv"
+	"github.com/yagoluiz/user-api/configs"
 	"github.com/yagoluiz/user-api/internal/domain"
 	"github.com/yagoluiz/user-api/pkg/db"
+	"github.com/yagoluiz/user-api/pkg/logger"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -17,27 +20,32 @@ const (
 	collection = "Users"
 )
 
-func NewUserSeed(db *db.MongoClient) error {
+func NewUserSeed(logger logger.Logger, cfg *configs.Config, db *db.MongoClient) error {
 	done, err := importUserDone(db)
 	if err != nil {
 		return err
 	}
 
 	if done {
+		logger.Info("Import has already been done.")
 		return nil
 	}
 
-	users, err := importUserData()
+	logger.Info("Import will be done...")
+
+	resourcePath := setResourcePath(cfg)
+
+	users, err := importUserData(fmt.Sprintf("%s/users.csv", resourcePath))
 	if err != nil {
 		return err
 	}
 
-	priorities1, err := importPriorityData("resources/data/user_priority1.csv")
+	priorities1, err := importPriorityData(fmt.Sprintf("%s/user_priority1.csv", resourcePath))
 	if err != nil {
 		return err
 	}
 
-	priorities2, err := importPriorityData("resources/data/user_priority2.csv")
+	priorities2, err := importPriorityData(fmt.Sprintf("%s/user_priority2.csv", resourcePath))
 	if err != nil {
 		return err
 	}
@@ -47,7 +55,21 @@ func NewUserSeed(db *db.MongoClient) error {
 		return err
 	}
 
+	logger.Info("Import done!")
+
 	return nil
+}
+
+func setResourcePath(cfg *configs.Config) string {
+	var path string
+
+	if cfg.Debug {
+		path = "../resources/data"
+	} else {
+		path = "resources/data"
+	}
+
+	return path
 }
 
 func importUserDone(db *db.MongoClient) (bool, error) {
@@ -65,8 +87,8 @@ func importUserDone(db *db.MongoClient) (bool, error) {
 	return true, nil
 }
 
-func importUserData() ([]*domain.UserCSV, error) {
-	file, err := os.OpenFile("resources/data/users.csv", os.O_RDONLY, os.ModePerm)
+func importUserData(dir string) ([]*domain.UserCSV, error) {
+	file, err := os.OpenFile(dir, os.O_RDONLY, os.ModePerm)
 	if err != nil {
 		return nil, err
 	}

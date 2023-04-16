@@ -60,7 +60,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/entity.User"
+                            "$ref": "#/definitions/dtos.UserDto"
                         }
                     },
                     "400": {
@@ -74,20 +74,17 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "entity.User": {
+        "dtos.UserDto": {
             "type": "object",
             "properties": {
-                "createdAt": {
-                    "type": "string"
-                },
                 "id": {
                     "type": "string"
                 },
                 "name": {
                     "type": "string"
                 },
-                "updatedAt": {
-                    "type": "string"
+                "priority": {
+                    "type": "integer"
                 },
                 "userId": {
                     "type": "string"

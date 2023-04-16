@@ -17,10 +17,6 @@
 # Go workspace file
 go.work
 
-# Common IDE folders
-.idea
-.vscode
-
 # Log files
 *.log
 

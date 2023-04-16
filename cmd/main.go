@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"log"
 	"net/http"
 	"os"
 	"os/signal"
@@ -18,9 +17,10 @@ import (
 	"github.com/yagoluiz/user-api/internal/api/healths"
 	"github.com/yagoluiz/user-api/internal/api/routers"
 	"github.com/yagoluiz/user-api/internal/repositories"
-	"github.com/yagoluiz/user-api/internal/repositories/seed"
-	"github.com/yagoluiz/user-api/internal/usercase"
+	"github.com/yagoluiz/user-api/internal/usecase"
 	"github.com/yagoluiz/user-api/pkg/db"
+	"github.com/yagoluiz/user-api/pkg/db/seed"
+	"github.com/yagoluiz/user-api/pkg/logger"
 )
 
 // @title          User API
@@ -36,27 +36,34 @@ import (
 func main() {
 	cfg, err := configs.GetConfigs()
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
+
+	logger, err := logger.NewLogger(cfg)
+	if err != nil {
+		panic(err)
+	}
+
+	logger.Infof("API debug: %v", cfg.Debug)
 
 	database, err := db.NewConnection(cfg.MongoConnection)
 	if err != nil {
-		log.Fatal(err)
+		logger.Fatal(err)
 	}
 
 	err = database.CreateIndexes()
 	if err != nil {
-		log.Fatal(err)
+		logger.Fatal(err)
 	}
 
-	err = seed.NewUserSeed(database)
+	err = seed.NewUserSeed(logger, cfg, database)
 	if err != nil {
-		log.Fatal(err)
+		logger.Fatal(err)
 	}
 
-	ur := repositories.NewUserRepository(database)
-	uc := usercase.NewUserSearchUserCase(ur)
-	h := handlers.NewUserSearchHandler(uc)
+	ur := repositories.NewUserRepository(logger, database)
+	uc := usecase.NewUserSearchUseCase(logger, ur)
+	h := handlers.NewUserSearchHandler(logger, uc)
 
 	r := chi.NewRouter()
 	r.Use(middleware.RequestID)
@@ -71,6 +78,10 @@ func main() {
 	server := &http.Server{Addr: cfg.Port, Handler: r}
 	serverCtx, serverStopCtx := context.WithCancel(context.Background())
 
+	gracefulShutdownServer(serverCtx, logger, server, serverStopCtx, err)
+}
+
+func gracefulShutdownServer(serverCtx context.Context, logger logger.Logger, server *http.Server, serverStopCtx context.CancelFunc, err error) {
 	sig := make(chan os.Signal, 1)
 	signal.Notify(sig, syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
 
@@ -83,20 +94,20 @@ func main() {
 		go func() {
 			<-shutdownCtx.Done()
 			if shutdownCtx.Err() == context.DeadlineExceeded {
-				log.Fatal("Graceful shutdown timed out.. forcing exit.")
+				logger.Fatal("Graceful shutdown timed out.. forcing exit.")
 			}
 		}()
 
 		err := server.Shutdown(shutdownCtx)
 		if err != nil {
-			log.Fatal(err)
+			logger.Fatal(err)
 		}
 		serverStopCtx()
 	}()
 
 	err = server.ListenAndServe()
 	if err != nil && err != http.ErrServerClosed {
-		log.Fatal(err)
+		logger.Fatal(err)
 	}
 
 	<-serverCtx.Done()
