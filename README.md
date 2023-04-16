@@ -4,72 +4,45 @@
 
 API responsible for search users using MongoDB [Text Search](https://docs.mongodb.com/manual/text-search).
 
+Branch project implemented in C# => [user-api/dotnet](https://github.com/yagoluiz/user-api/tree/dotnet)
+
 ## Instructions for run project
 
-Run project via Docker, via Visual Studio (F5 or CTRL + F5), Visual Studio Code (tasks project) or CLI.
+Run project via Docker (using Makefile) or Visual Studio Code (tasks project).
 
 ### Docker
 
 ```bash
-docker-compose up -d
+make compose-up
 ```
 
-### .NET CLI
-
-- Run project
-
 ```bash
-src/User.API
-
-dotnet watch run
+make compose-down
 ```
 
-- Run tests
-
 ```bash
-dotnet test -t
+make compose-log-user-api
 ```
 
 ## Endpoints
 
-Curl's file: [endpoints.http](endpoints.http).
-
-For more information visit swagger: *http://localhost:5000/swagger/index.html* or *http://localhost:5001/swagger/index.html (Docker)*.
-
-## Tests
-
-### Code Coverage
-
-To run the coverage of the project tests, it is necessary to run the test command in coverage mode:
+*Swagger*
 
 ```bash
-dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:Exclude="[xunit*]*"
+http://localhost:8080/swagger/index.html
 ```
 
-Run the command in the **root** project.
-
-### Coverage Report
-
-Install [Report Generator](https://danielpalme.github.io/ReportGenerator) CLI tool:
+*v1/users/search*
 
 ```bash
-dotnet tool install --global dotnet-reportgenerator-globaltool
+curl -X 'GET' \
+  'http://localhost:8080/api/v1/users/search?query=yago&from=1&size=10' \
+  -H 'accept: application/json'
 ```
-
-- Main command
-
-```bash
-reportgenerator "-reports:test/*/*.opencover.xml" "-targetdir:coverage" "-reporttypes:Html"
-```
-
-Run the command in the **root** project.
-
-- Coverage report
-
-Find the folder **coverage** and open **index.html**.
 
 ## Improvements
 
+- Add unit tests
 - Search endpoint cache
 - Performance query for search (remove skip and limit)
 - Priority index

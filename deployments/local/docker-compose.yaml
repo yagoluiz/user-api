@@ -1,0 +1,50 @@
+version: '3.9'
+
+services:
+  user-api:
+    container_name: user-api
+    image: user-api
+    build:
+      context: ../..
+      dockerfile: build/Dockerfile
+    ports:
+      - '8080:8080'
+    env_file:
+      - .env
+    restart: always
+    networks:
+      - user-network
+    depends_on:
+      - user-db
+
+  user-db:
+    container_name: user-db
+    image: mongo:6.0
+    ports:
+      - '27017:27017'
+    volumes:
+      - user-db:/data/db
+    networks:
+      - user-network
+
+  user-db-ui:
+    container_name: user-db-ui
+    image: mongo-express:latest
+    ports:
+      - '8081:8081'
+    environment:
+      - ME_CONFIG_MONGODB_URL=mongodb://user-db:27017
+    networks:
+      - user-network
+    depends_on:
+      - user-db
+
+networks:
+  user-network:
+    name: user
+    driver: bridge
+
+volumes:
+  user-db:
+    name: user-db
+    driver: local
