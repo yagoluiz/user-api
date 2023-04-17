@@ -6,7 +6,7 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-type zapLogger struct {
+type ZapLogger struct {
 	logger *zap.Logger
 }
 
@@ -42,57 +42,57 @@ func NewLogger(cfg *configs.Config) (Logger, error) {
 		return nil, err
 	}
 
-	return &zapLogger{logger: logger}, nil
+	return &ZapLogger{logger: logger}, nil
 }
 
-func (l *zapLogger) Debug(args ...any) {
+func (l *ZapLogger) Debug(args ...any) {
 	l.logger.Sugar().Debug(args...)
 }
 
-func (l *zapLogger) Debugf(format string, args ...any) {
+func (l *ZapLogger) Debugf(format string, args ...any) {
 	l.logger.Sugar().Debugf(format, args...)
 }
 
-func (l *zapLogger) Info(args ...any) {
+func (l *ZapLogger) Info(args ...any) {
 	l.logger.Sugar().Info(args...)
 }
 
-func (l *zapLogger) Infof(format string, args ...any) {
+func (l *ZapLogger) Infof(format string, args ...any) {
 	l.logger.Sugar().Infof(format, args...)
 }
 
-func (l *zapLogger) Warn(args ...any) {
+func (l *ZapLogger) Warn(args ...any) {
 	l.logger.Sugar().Warn(args...)
 }
 
-func (l *zapLogger) Warnf(format string, args ...any) {
+func (l *ZapLogger) Warnf(format string, args ...any) {
 	l.logger.Sugar().Warnf(format, args...)
 }
 
-func (l *zapLogger) Error(args ...any) {
+func (l *ZapLogger) Error(args ...any) {
 	l.logger.Sugar().Error(args...)
 }
 
-func (l *zapLogger) Errorf(format string, args ...any) {
+func (l *ZapLogger) Errorf(format string, args ...any) {
 	l.logger.Sugar().Errorf(format, args...)
 }
 
-func (l *zapLogger) Fatal(args ...any) {
+func (l *ZapLogger) Fatal(args ...any) {
 	l.logger.Sugar().Fatal(args...)
 }
 
-func (l *zapLogger) Fatalf(format string, args ...any) {
+func (l *ZapLogger) Fatalf(format string, args ...any) {
 	l.logger.Sugar().Fatalf(format, args...)
 }
 
-func (l *zapLogger) Panic(args ...any) {
+func (l *ZapLogger) Panic(args ...any) {
 	l.logger.Sugar().Panic(args...)
 }
 
-func (l *zapLogger) Panicf(format string, args ...any) {
+func (l *ZapLogger) Panicf(format string, args ...any) {
 	l.logger.Sugar().Panicf(format, args...)
 }
 
-func (l *zapLogger) WithField(key string, value any) Logger {
-	return &zapLogger{logger: l.logger.With(zap.Any(key, value))}
+func (l *ZapLogger) WithField(key string, value any) Logger {
+	return &ZapLogger{logger: l.logger.With(zap.Any(key, value))}
 }

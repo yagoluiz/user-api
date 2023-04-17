@@ -17,7 +17,7 @@ import (
 	"github.com/yagoluiz/user-api/internal/api/healths"
 	"github.com/yagoluiz/user-api/internal/api/routers"
 	"github.com/yagoluiz/user-api/internal/repositories"
-	"github.com/yagoluiz/user-api/internal/usecase"
+	"github.com/yagoluiz/user-api/internal/usecases"
 	"github.com/yagoluiz/user-api/pkg/db"
 	"github.com/yagoluiz/user-api/pkg/db/seed"
 	"github.com/yagoluiz/user-api/pkg/logger"
@@ -62,7 +62,7 @@ func main() {
 	}
 
 	ur := repositories.NewUserRepository(logger, database)
-	uc := usecase.NewUserSearchUseCase(logger, ur)
+	uc := usecases.NewUserSearchUseCase(logger, ur)
 	h := handlers.NewUserSearchHandler(logger, uc)
 
 	r := chi.NewRouter()

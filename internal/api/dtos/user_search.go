@@ -12,7 +12,7 @@ type UserDto struct {
 	Username  string    `json:"username"`
 	Priority  int       `json:"priority"`
 	CreatedAt time.Time `json:"createdAt"`
-}
+} // @name User
 
 func DomainToUsersDto(users []*domain.User) []*UserDto {
 	var usersDtos []*UserDto

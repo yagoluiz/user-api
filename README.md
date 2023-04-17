@@ -24,6 +24,42 @@ make compose-down
 make compose-log-user-api
 ```
 
+```bash
+make compose-log-user-db
+```
+
+### VS Code
+
+Execute F5 command and run database:
+
+```bash
+make mongo-db
+```
+
+## Instructions for run test project
+
+```bash
+make test-install-mocks
+```
+
+```bash
+make test-generate-mocks
+```
+
+```bash
+make test-run
+```
+
+```bash
+make test-coverage
+```
+
+## Other commands
+
+```bash
+make pkg-update
+```
+
 ## Endpoints
 
 *Swagger*
