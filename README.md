@@ -39,10 +39,3 @@ curl -X 'GET' \
   'http://localhost:8080/api/v1/users/search?query=yago&from=1&size=10' \
   -H 'accept: application/json'
 ```
-
-## Improvements
-
-- Add unit tests
-- Search endpoint cache
-- Performance query for search (remove skip and limit)
-- Priority index
