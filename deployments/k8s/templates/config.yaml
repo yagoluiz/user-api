@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+
+metadata:
+  name: user-api-config-map
+  namespace: user
+
+data:
+  PORT: ":8080"
+  API_HOST: "http://localhost:8080"
+  MONGO_CONNECTION: "mongodb://user-db:27017"
+  DEBUG: "false"
